@@ -1,72 +1,73 @@
-<h1>Présentation de l'API</h1>
-Cette API, écrite en PHP, est basée sur la structure de l'API présentée dans le dépôt suivant :<br>
-https://github.com/CNED-SLAM/rest_chocolatein<br>
-Le readme de ce dépôt présente la structure de la base de l'API (rôle de chaque fichier) et comment l'exploiter.<br>
-Les ajouts faits dans cette API ne concernent que les fichiers '.env' (qui contient les données sensibles d'authentification et d'accès à la BDD) et 'MyAccessBDD.php' (dans lequel de nouvelles fonctions ont été ajoutées pour répondre aux demandes de l'application).<br>
-Cette API permet d'exécuter des requêtes SQL sur la BDD Mediatek86 créée avec le SGBDR MySQL.<br>
-Elle est accessible via une authentification "basique" (avec login="admin", pwd="adminpwd").<br>
-Sa vocation actuelle est de répondre aux demandes de l'application MediaTekDocuments, mise en ligne sur le dépôt :<br>
-https://github.com/CNED-SLAM/MediaTekDocuments
+# rest_mediatekdocuments — Atelier 2
 
-<h1>Installation de l'API en local</h1>
-Pour tester l'API REST en local, voici le mode opératoire (similaire à celui donné dans le dépôt d'API de base) :
-<ul>
-   <li>Installer les outils nécessaires (WampServer ou équivalent, NetBeans ou équivalent pour gérer l'API dans un IDE, Postman pour les tests).</li>
-   <li>Télécharger le zip du code de l'API et le dézipper dans le dossier www de wampserver (renommer le dossier en "rest_mediatekdocuments", donc en enlevant "_master").</li>
-   <li>Si 'Composer' n'est pas installé, le télécharger avec ce lien et l'insstaller : https://getcomposer.org/Composer-Setup.exe </li>
-   <li>Dans une fenêtre de commandes ouverte en mode admin, aller dans le dossier de l'API et taper 'composer install' puis valider pour recréer le vendor.</li>
-   <li>Récupérer le script metiak86.sql en racine du projet puis, avec phpMyAdmin, créer la BDD mediatek86 et, dans cette BDD, exécuter le script pour remplir la BDD.</li>
-   <li>Ouvrir l'API dans NetBeans pour pouvoir analyser le code et le faire évoluer suivant les besoins.</li>
-   <li>Pour tester l'API avec Postman, ne pas oublier de configurer l'authentification (onglet "Authorization", Type "Basic Auth", Username "admin", Password "adminpwd".</li>
-</ul>
-<h1>Exploitation de l'API</h1>
-Adresse de l'API (en local) : http://localhost/rest_mediatekdocuments/ <br>
-Voici les différentes possibilités de sollicitation de l'API, afin d'agir sur la BDD, en ajoutant des informations directement dans l'URL (visible) et éventuellement dans le body (invisible) suivant les besoins : 
-<h2>Récupérer un contenu (select)</h2>
-Méthode HTTP : <strong>GET</strong><br>
-http://localhost/rest_mediatekdocuments/table/champs (champs optionnel)
-<ul>
-   <li>'table' doit être remplacé par un nom de table (caractères acceptés : alphanumériques et '_')</li>
-   <li>'champs' (optionnel) doit être remplacé par la liste des champs (nom/valeur) qui serviront à la recherche (au format json)</li>
-</ul>
+> Le dépôt d'origine se trouve ici : https://github.com/CNED-SLAM/rest_mediatekdocuments  
+> Il contient dans son readme la présentation complète de l'API d'origine.
 
-<h2>Insérer (insert)</h2>
-Méthode HTTP : <strong>POST</strong><br>
-http://localhost/rest_mediatekdocuments/table <br>
-'table' doit être remplacé par un nom de table (caractères acceptés : alphanumériques et '_')<br>
-Dans le body (Dans Postman, onglet 'Body', cocher 'x-www-form-urlencoded'), ajouter :<br>
-<ul>
-   <li>Key : 'champs'</li>
-   <li>Value : liste des champs (nom/valeur) qui serviront à l'insertion (au format json)</li>
-</ul>
+## Présentation
 
-<h2>Modifier (update)</h2>
-Méthode HTTP : <strong>PUT</strong><br>
-http://localhost/rest_mediatekdocuments/table/id (id optionnel)<br>
-<ul>
-   <li>'table' doit être remplacé par un nom de table (caractères acceptés : alphanumériques et '_')</li>
-   <li>'id' (optionnel) doit être remplacé par l'identifiant de la ligne à modifier (caractères acceptés : alphanumériques)</li>
-</ul>
-Dans le body (Dans Postman, onglet 'Body', cocher 'x-www-form-urlencoded'), ajouter :<br>
-<ul>
-   <li>Key : 'champs'</li>
-   <li>Value : liste des champs (nom/valeur) qui serviront à la modification (au format json)</li>
-</ul>
+Ce dépôt contient l'API REST PHP **rest_mediatekdocuments** enrichie dans le cadre de l'Atelier 2 du BTS SIO SLAM (CNED 2026). L'API est consommée par l'application C# MediaTekDocuments.
 
-<h2>Supprimer (delete)</h2>
-Méthode HTTP : <strong>DELETE</strong><br>
-http://localhost/rest_mediatekdocuments/table/champs (champs optionnel)<br>
-<ul>
-   <li>'table' doit être remplacé par un nom de table (caractères acceptés : alphanumériques et '_')</li>
-   <li> 'champs' (optionnel) doit être remplacé par la liste des champs (nom/valeur) qui serviront déterminer les lignes à supprimer (au format json</li>
-</ul>
+## API en ligne
+**http://azizmediatek.atwebpages.com/**
 
-<h1>Les fonctionnalités ajoutées</h1>
-Dans MyAccessBDD, plusieurs fonctions ont été ajoutées pour répondre aux demandes actuelles de l'application C# MediaTekDocuments :<br>
-<ul>
-   <li><strong>selectTableSimple : </strong>récupère les lignes des tables simples (genre, public, rayon, etat) contenant juste 'id' et 'libelle', dans l'ordre alphabétique sur 'libelle'. Cette fonction est appelée pour  remplir les combos correspondants.</li>
-   <li><strong>selectAllLivres : </strong>récupère la liste des livres avec les informations correspondantes (d'où nécessité de jointures).</li>
-   <li><strong>selectAllDvd : </strong>même chose pour les dvd.</li>
-   <li><strong>selectAllRevues : </strong>même chose pour les revues.</li>
-   <li><strong>selectExemplairesRevue : </strong>récupère les exemplaires d'une revue dont l'id sera donné.</li>
-</ul>
+## Nouvelles routes ajoutées
+
+| Méthode | Route | Description |
+|---------|-------|-------------|
+| POST | /document | Ajouter un document |
+| PUT | /document/{id} | Modifier un document |
+| DELETE | /document/{id} | Supprimer un document |
+| GET | /exemplairellivredvd/{id} | Récupérer les exemplaires |
+| PUT | /exemplairellivredvd/{id} | Modifier l'état d'un exemplaire |
+| DELETE | /exemplairellivredvd/{id} | Supprimer un exemplaire |
+| GET | /abonnement | Récupérer les abonnements |
+| POST | /abonnement | Ajouter un abonnement |
+| DELETE | /abonnement/{id} | Supprimer un abonnement |
+| GET | /suivi | Récupérer les étapes de suivi |
+| GET | /commandedocument/{id} | Récupérer les commandes |
+| POST | /commandedocument | Ajouter une commande |
+| PUT | /commandedocument/{id} | Modifier l'état d'une commande |
+| DELETE | /commandedocument/{id} | Supprimer une commande |
+
+## Mode opératoire — Installation en local
+
+### Prérequis
+- MAMP (Apache + MySQL)
+- PHP 8.x
+- Composer
+
+### Installation
+1. Cloner ce dépôt dans `/Applications/MAMP/htdocs/rest_mediatekdocuments/`
+2. Installer les dépendances :
+```bash
+composer install
+```
+3. Copier `.env.example` en `.env` et renseigner les informations de connexion :
+```
+AUTHENTIFICATION=basic
+AUTH_USER=admin
+AUTH_PWD=adminpwd
+BDD_LOGIN=root
+BDD_PWD=root
+BDD_BD=mediatek86
+BDD_SERVER=localhost
+BDD_PORT=8889
+```
+4. Importer le script SQL dans phpMyAdmin :
+   - Ouvrir http://localhost:8888/phpMyAdmin
+   - Créer la base `mediatek86`
+   - Importer `mediatek86.sql` (disponible dans le dépôt MediaTekDocuments)
+
+### Test avec Postman
+Importer la collection Postman disponible dans le dépôt C# et configurer l'authentification Basic Auth :
+- Username : `admin`
+- Password : `adminpwd`
+
+<img width="1035" height="612" alt="Screenshot 2026-04-02 at 16 53 55" src="https://github.com/user-attachments/assets/d7aba630-8705-4dad-ba85-c53d75f1f165" />
+
+
+## Documentation technique
+Les commentaires PHPDoc sont présents dans `src/MyAccessBDD.php`
+
+## Dépôt de l'application C#
+https://github.com/Simba-TRZ/MediaTekDocuments
